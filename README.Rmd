@@ -1,0 +1,74 @@
+---
+output:
+  md_document:
+    variant: markdown_github
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, echo = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "README-"
+)
+```
+
+# gdalmin
+
+The goal of gdalmin is to ...
+
+## set up notes
+
+```{r}
+devtools::create("../gdalmin")
+devtools::use_readme_rmd()
+devtools::use_package_doc()
+## useDynLib and importFrom Rccp in package doc
+devtools::use_rcpp()
+
+file.copy("inst/extdata/boilerplate/ogr_api_tutorial.cpp", "src/ogr_api.cpp", overwrite = TRUE)
+## modify the C++ as below
+
+## copy the contents of 
+## https://raw.githubusercontent.com/dis-organization/vapour/master/configure.ac to configure.ac
+```
+
+Run the following
+
+```
+autoconf
+tools::package_native_routine_registration_skeleton("../gdalmin", "src/init.c",character_only = FALSE)
+```
+
+```
+#include <Rcpp.h>
+using namespace Rcpp;
+
+
+#include "ogrsf_frmts.h"
+//' OGR API
+//'
+//' OGR API tutorial minimal example
+//' @export
+//' @return integer
+//' @examples
+// [[Rcpp::export]]
+//' ogr_api()
+
+{
+  GDALAllRegister();
+  GDALDataset       *poDS;
+  poDS = (GDALDataset*) GDALOpenEx( "inst/extdata/shp/point.shp", GDAL_OF_VECTOR, NULL, NULL, NULL );
+ 
+
+```
+
+Data raw
+
+```R
+library(sf)
+pt <- st_sf(geometry = st_sfc(lapply(1:10, function(x) st_point(rnorm(2))), crs  = 3031), 
+            a = 1:10, b = head(letters, 10))
+st_write(pt, "inst/extdata/shp/point.shp")
+```
