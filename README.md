@@ -58,12 +58,10 @@ Modify src/ogr\_api.cpp to include Rcpp, roxygen doc comments, a non-void main C
       GDALAllRegister();
       GDALDataset       *poDS;
       poDS = (GDALDataset*) GDALOpenEx( "inst/extdata/shp/point.shp", GDAL_OF_VECTOR, NULL, NULL, NULL );
-    ...
 
+Run the following
 
-    Run the following
-
-autoconf \#\# this will create configure from configure.ac \`\`\`
+    autoconf  ## this will create configure from configure.ac
 
 Now run the following, it creates 'src/init.c'.
 
