@@ -10,8 +10,7 @@ using namespace Rcpp;
 //' @return integer
 //' @examples
 // [[Rcpp::export]]
-//' ogr_api()
-
+int ogr_api()
 {
   GDALAllRegister();
   GDALDataset       *poDS;

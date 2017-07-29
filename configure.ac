@@ -2,7 +2,7 @@ dnl copied from github.com/r-spatial/sf/configure.ac 2017-07-29 Michael Sumner
 dnl
 dnl Process this file with autoconf to produce a configure script.
 dnl GDAL stuff largely copied from rgdal, (c) Roger Bivand
-AC_INIT(src/vapour.cpp)
+AC_INIT(src/ogr_api.cpp)
 
 : ${R_HOME=`R RHOME`}
 if test -z "${R_HOME}"; then
