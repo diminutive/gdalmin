@@ -5,6 +5,11 @@
 
 using namespace Rcpp;
 
+#ifdef RCPP_USE_GLOBAL_ROSTREAM
+Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
+Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
+#endif
+
 // ogr_api
 int ogr_api();
 RcppExport SEXP _gdalmin_ogr_api() {
@@ -14,4 +19,14 @@ BEGIN_RCPP
     rcpp_result_gen = Rcpp::wrap(ogr_api());
     return rcpp_result_gen;
 END_RCPP
+}
+
+static const R_CallMethodDef CallEntries[] = {
+    {"_gdalmin_ogr_api", (DL_FUNC) &_gdalmin_ogr_api, 0},
+    {NULL, NULL, 0}
+};
+
+RcppExport void R_init_gdalmin(DllInfo *dll) {
+    R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
+    R_useDynamicSymbols(dll, FALSE);
 }
