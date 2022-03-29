@@ -20,9 +20,22 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// open_as_vrt
+NumericVector open_as_vrt(CharacterVector dsn, NumericVector a_ullr);
+RcppExport SEXP _gdalmin_open_as_vrt(SEXP dsnSEXP, SEXP a_ullrSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< CharacterVector >::type dsn(dsnSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type a_ullr(a_ullrSEXP);
+    rcpp_result_gen = Rcpp::wrap(open_as_vrt(dsn, a_ullr));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_gdalmin_ogr_api", (DL_FUNC) &_gdalmin_ogr_api, 0},
+    {"_gdalmin_open_as_vrt", (DL_FUNC) &_gdalmin_open_as_vrt, 2},
     {NULL, NULL, 0}
 };
 

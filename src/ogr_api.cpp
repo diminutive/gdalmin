@@ -57,4 +57,5 @@ int ogr_api()
     OGRFeature::DestroyFeature( poFeature );
   }
   GDALClose( poDS );
+  return 1;
 }
