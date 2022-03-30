@@ -7,63 +7,62 @@ using namespace Rcpp;
 #include "vrtdataset.h"
 #include <iostream>
 
-// [[Rcpp::export]]
-NumericVector open_as_vrt(CharacterVector dsn, NumericVector a_ullr) {
-
-
+GDALDataset *gdal_dataset_augment(CharacterVector dsn,
+                                  NumericVector extent,
+                                  CharacterVector projection) {
   GDALAllRegister();
-  //  GDALDataset  *poDataset;
-  //  poDataset = (GDALDataset *) GDALOpen(dsn[0], GA_ReadOnly );
-
   auto poSrcDS = GDALDataset::Open(dsn[0], GDAL_OF_RASTER | GDAL_OF_SHARED,
                                    nullptr, nullptr, nullptr);
-  double        adfGeoTransform[6];
-  adfGeoTransform[0] = NA_REAL;
-  adfGeoTransform[1] = NA_REAL;
-  adfGeoTransform[2] = NA_REAL;
-  adfGeoTransform[3] = NA_REAL;
-  adfGeoTransform[4] = NA_REAL;
-  adfGeoTransform[5] = NA_REAL;
-
   if( poSrcDS == nullptr )
   {
-    return NA_REAL;
+    return nullptr;
   }
-
   CPLStringList argv;
-
   argv.AddString("-of");
   argv.AddString("VRT");
-
-  bool bbox = true;
-  if (bbox) {
+  bool set_extent = extent.size() == 4;
+  bool set_projection = !projection[0].empty();
+  if (set_extent) {
+    if ((extent[1] <= extent[0]) || extent[3] <= extent[2]) {
+      poSrcDS->ReleaseRef();
+      Rprintf("extent must be valid c(xmin, xmax, ymin, ymax)\n");
+      return nullptr;
+    }
     argv.AddString("-a_ullr");
-    argv.AddString(CPLSPrintf("%f", a_ullr[0]));
-    argv.AddString(CPLSPrintf("%f", a_ullr[1]));
-    argv.AddString(CPLSPrintf("%f", a_ullr[2]));
-    argv.AddString(CPLSPrintf("%f", a_ullr[3]));
+    argv.AddString(CPLSPrintf("%f", extent[0]));
+    argv.AddString(CPLSPrintf("%f", extent[3]));
+    argv.AddString(CPLSPrintf("%f", extent[1]));
+    argv.AddString(CPLSPrintf("%f", extent[2]));
   }
-
+  if (set_projection) {
+     argv.AddString("-a_srs");
+     argv.AddString(projection[0]);
+  }
   GDALTranslateOptions* psOptions = GDALTranslateOptionsNew(argv.List(), nullptr);
-
   auto hRet = GDALTranslate("", GDALDataset::ToHandle(poSrcDS),
                             psOptions, nullptr);
-
+  GDALTranslateOptionsFree( psOptions );
   poSrcDS->ReleaseRef();
-
   auto poDS = cpl::down_cast<VRTDataset*>(GDALDataset::FromHandle(hRet));
-
   if( poDS )
   {
-    poDS->SetDescription(dsn[0]);
+    poDS->SetDescription(CPLSPrintf("%s", dsn[0]));
     poDS->SetWritable(false);
-
-    //poDataset->GetGeoTransform( adfGeoTransform );
-    GDALGetGeoTransform(poDS, adfGeoTransform );
-
-    GDALClose(poDS);
   }
-  NumericVector out(6);
-  for (int i = 0; i < 6; i++) out[i] = adfGeoTransform[i];
+  return poDS;
+}
+
+
+// [[Rcpp::export]]
+CharacterVector open_as_vrt(CharacterVector dsn, NumericVector extent, CharacterVector projection) {
+  CharacterVector out(1);
+
+  GDALDataset *poDS = gdal_dataset_augment(dsn, extent, projection);
+  if (poDS) {
+    const char *xmlvrt = poDS->GetMetadata("xml:VRT")[0];
+
+    out[0] = xmlvrt;
+    poDS->ReleaseRef();
+  }
   return out;
 }
