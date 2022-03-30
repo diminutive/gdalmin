@@ -3,8 +3,4 @@
 \docType{package}
 \name{gdalmin}
 \alias{gdalmin}
-\alias{gdalmin-package}
 \title{gdalmin.}
-\description{
-gdalmin.
-}

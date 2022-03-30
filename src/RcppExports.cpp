@@ -21,22 +21,23 @@ BEGIN_RCPP
 END_RCPP
 }
 // open_as_vrt
-CharacterVector open_as_vrt(CharacterVector dsn, NumericVector extent, CharacterVector projection);
-RcppExport SEXP _gdalmin_open_as_vrt(SEXP dsnSEXP, SEXP extentSEXP, SEXP projectionSEXP) {
+CharacterVector open_as_vrt(CharacterVector dsn, NumericVector extent, CharacterVector projection, IntegerVector sds);
+RcppExport SEXP _gdalmin_open_as_vrt(SEXP dsnSEXP, SEXP extentSEXP, SEXP projectionSEXP, SEXP sdsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< CharacterVector >::type dsn(dsnSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type extent(extentSEXP);
     Rcpp::traits::input_parameter< CharacterVector >::type projection(projectionSEXP);
-    rcpp_result_gen = Rcpp::wrap(open_as_vrt(dsn, extent, projection));
+    Rcpp::traits::input_parameter< IntegerVector >::type sds(sdsSEXP);
+    rcpp_result_gen = Rcpp::wrap(open_as_vrt(dsn, extent, projection, sds));
     return rcpp_result_gen;
 END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
     {"_gdalmin_ogr_api", (DL_FUNC) &_gdalmin_ogr_api, 0},
-    {"_gdalmin_open_as_vrt", (DL_FUNC) &_gdalmin_open_as_vrt, 3},
+    {"_gdalmin_open_as_vrt", (DL_FUNC) &_gdalmin_open_as_vrt, 4},
     {NULL, NULL, 0}
 };
 

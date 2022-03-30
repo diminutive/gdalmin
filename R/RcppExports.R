@@ -11,7 +11,7 @@ ogr_api <- function() {
     .Call('_gdalmin_ogr_api', PACKAGE = 'gdalmin')
 }
 
-open_as_vrt <- function(dsn, extent, projection) {
-    .Call('_gdalmin_open_as_vrt', PACKAGE = 'gdalmin', dsn, extent, projection)
+open_as_vrt <- function(dsn, extent, projection, sds) {
+    .Call('_gdalmin_open_as_vrt', PACKAGE = 'gdalmin', dsn, extent, projection, sds)
 }
 
