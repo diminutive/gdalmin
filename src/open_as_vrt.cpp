@@ -10,24 +10,14 @@ using namespace Rcpp;
 // done:
 //   - augment extent
 //   - augment projection
+//   - sds selection, by index 1-based, or default the first one
 
 // todo:
 //  - multiple dsn (only allowed by the warper, not conversion to vrt)
-//  - sds selection, by argument, by name, by default the first one
-
-GDALDataset *gdal_open_dsn(CharacterVector dsn) {
-  GDALAllRegister();
-  auto DS = GDALDataset::Open(dsn[0], GDAL_OF_RASTER | GDAL_OF_SHARED,
-                                   nullptr, nullptr, nullptr);
-  if( DS == nullptr )
-  {
-    return nullptr;
-  }
-  return GDALDataset::FromHandle( DS);
-}
-CharacterVector list_subdatasets(GDALDataset *poDataset) {
+bool has_subdataset(GDALDataset *poDataset) {
+  // not faster, we good
+  //if (poDataset->GetRasterCount() > 0) return false;
   char **MDdomain = GDALGetMetadataDomainList(poDataset);
-
   int mdi = 0; // iterate though MetadataDomainList
   bool has_sds = false;
   while (MDdomain && MDdomain[mdi] != NULL) {
@@ -38,56 +28,83 @@ CharacterVector list_subdatasets(GDALDataset *poDataset) {
   }
   //cleanup
   CSLDestroy(MDdomain);
-
-  int dscount = 0;
-  if (has_sds) {
-    // owned by the object
-    char **SDS = GDALGetMetadata(poDataset, "SUBDATASETS");
-    int sdi = 0;
-    while (SDS && SDS[sdi] != NULL) {
-      sdi++; // count
-    }
-    dscount = sdi;
+  return has_sds;
+}
+CharacterVector list_subdatasets(GDALDataset *poDataset) {
+  // need error handling on this is so janky
+  int sdi = 0;
+  // don't call this function without calling has_subdatasets() first
+  // owned by the object
+  char **SDS = GDALGetMetadata(poDataset, "SUBDATASETS");
+  while (SDS && SDS[sdi] != NULL) {
+    sdi++; // count
   }
-  if (dscount < 1) return "";
-
+  // FIXME
+  if (sdi < 1) return "";
+  if (!(sdi % 2 == 0)) return "";
   // we only want the first of each pair
-  dscount = dscount / 2;
+  int dscount = sdi / 2;
   Rcpp::CharacterVector ret(dscount);
-  if (has_sds) {
+  if (dscount > 0) {
     // we have subdatasets, so list them all
     // owned by the object
     char **SDS2 = GDALGetMetadata(poDataset, "SUBDATASETS");
     for (int ii = 0; ii < dscount; ii++) {
       // ii*2 because SDS tokens come in pairs
       char  **papszTokens = CSLTokenizeString2(SDS2[ii * 2], "=", 0);
-
       ret(ii) = papszTokens[1];
       CSLDestroy( papszTokens );
     }
   }
- return ret;
+  return ret;
 }
-bool default_geotransform(GDALDataset *poDataset) {
-  bool test = false;
-  double geotransform[6];
-  poDataset->GetGeoTransform(geotransform);
-  test =
-    geotransform[0] == 0.0 &&
-    geotransform[1] == 1.0 &&
-    geotransform[2] == 0.0 &&
-    geotransform[3] == 0.0 &&
-    geotransform[4] == 0.0 &&
-    geotransform[5] == 1.0;
 
-  return test;
+// bool default_geotransform(GDALDataset *poDataset) {
+//   bool test = false;
+//   double geotransform[6];
+//   poDataset->GetGeoTransform(geotransform);
+//   test =
+//     geotransform[0] == 0.0 &&
+//     geotransform[1] == 1.0 &&
+//     geotransform[2] == 0.0 &&
+//     geotransform[3] == 0.0 &&
+//     geotransform[4] == 0.0 &&
+//     geotransform[5] == 1.0;
+//
+//   return test;
+// }
+// open DSN or one SDS, never returns the DSN that has subdatasets
+GDALDataset *gdal_open_dsn(CharacterVector dsn, IntegerVector sds) {
+  GDALAllRegister();
+  auto DS = GDALDataset::Open(dsn[0], GDAL_OF_RASTER | GDAL_OF_SHARED, nullptr, nullptr, nullptr);
+  if( DS == nullptr ) {
+    return nullptr;
+  }
+  int isds = sds[0];
+  if (// is it worth this extra pre-checking (not much faster, no, we on par with vapour_raster_info about 1/20 second)
+      // (DS->GetRasterXSize() == 512 && DS->GetRasterYSize() == 512 && DS->GetRasterCount() < 1 && default_geotransform(DS)) ||
+      has_subdataset(DS)) {
+    CharacterVector sdsnames = list_subdatasets(DS);
+    if (sdsnames.length() > 0 && !sdsnames[0].empty()) {
+      // user asked for 1-based SDS, or zero was default
+      if (isds < 1) {
+        isds = 1;
+      }
+      if (isds > (sdsnames.length())) {
+        return nullptr;
+      }
+      DS->ReleaseRef();
+      DS = GDALDataset::Open(sdsnames[isds - 1], GDAL_OF_RASTER | GDAL_OF_SHARED, nullptr, nullptr, nullptr);
+
+    }
+  }
+  return GDALDataset::FromHandle( DS);
 }
 GDALDataset *gdal_dataset_augment(CharacterVector dsn,
                                   NumericVector extent,
                                   CharacterVector projection,
                                   IntegerVector sds) {
-
-  auto poSrcDS = gdal_open_dsn(dsn);
+  auto poSrcDS = gdal_open_dsn(dsn, sds);
   if( poSrcDS == nullptr )
    {
      return nullptr;
@@ -97,30 +114,6 @@ GDALDataset *gdal_dataset_augment(CharacterVector dsn,
   argv.AddString("VRT");
   bool set_extent = extent.size() == 4;
   bool set_projection = !projection[0].empty();
-  bool set_subdataset;
-  int isds = sds[0];
-  if (poSrcDS->GetRasterXSize() == 512 && poSrcDS->GetRasterYSize() == 512 && default_geotransform(poSrcDS)) {
-    // we *strongly* suspect
-    // need error handling on this is so janky
-    CharacterVector sdsnames = list_subdatasets(poSrcDS);
-    if (sdsnames.length() > 0 && !sdsnames[0].empty()) {
-      // user asked for 1-based SDS, or zero was default
-      if (isds < 1) {
-        isds = 1;
-      }
-      if (isds > (sdsnames.length())) {
-        return nullptr;
-      }
-
-      poSrcDS->ReleaseRef();
-      CharacterVector subdsn(1);
-      subdsn[0] = sdsnames[isds - 1];
-      poSrcDS = gdal_open_dsn(subdsn);
-
-    }
-  }
-
-
 
   if (set_extent) {
     if ((extent[1] <= extent[0]) || extent[3] <= extent[2]) {
@@ -138,6 +131,7 @@ GDALDataset *gdal_dataset_augment(CharacterVector dsn,
      argv.AddString("-a_srs");
      argv.AddString(projection[0]);
   }
+
   GDALTranslateOptions* psOptions = GDALTranslateOptionsNew(argv.List(), nullptr);
   auto hRet = GDALTranslate("", GDALDataset::ToHandle(poSrcDS),
                             psOptions, nullptr);
