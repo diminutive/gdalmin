@@ -34,10 +34,34 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// not_die1
+bool not_die1(CharacterVector proj);
+RcppExport SEXP _gdalmin_not_die1(SEXP projSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< CharacterVector >::type proj(projSEXP);
+    rcpp_result_gen = Rcpp::wrap(not_die1(proj));
+    return rcpp_result_gen;
+END_RCPP
+}
+// do_die1
+bool do_die1(CharacterVector proj);
+RcppExport SEXP _gdalmin_do_die1(SEXP projSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< CharacterVector >::type proj(projSEXP);
+    rcpp_result_gen = Rcpp::wrap(do_die1(proj));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_gdalmin_ogr_api", (DL_FUNC) &_gdalmin_ogr_api, 0},
     {"_gdalmin_open_as_vrt", (DL_FUNC) &_gdalmin_open_as_vrt, 4},
+    {"_gdalmin_not_die1", (DL_FUNC) &_gdalmin_not_die1, 1},
+    {"_gdalmin_do_die1", (DL_FUNC) &_gdalmin_do_die1, 1},
     {NULL, NULL, 0}
 };
 

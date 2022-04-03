@@ -15,3 +15,11 @@ open_as_vrt <- function(dsn, extent, projection, sds) {
     .Call('_gdalmin_open_as_vrt', PACKAGE = 'gdalmin', dsn, extent, projection, sds)
 }
 
+not_die1 <- function(proj) {
+    .Call('_gdalmin_not_die1', PACKAGE = 'gdalmin', proj)
+}
+
+do_die1 <- function(proj) {
+    .Call('_gdalmin_do_die1', PACKAGE = 'gdalmin', proj)
+}
+

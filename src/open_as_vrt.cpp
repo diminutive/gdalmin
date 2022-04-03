@@ -151,7 +151,7 @@ CharacterVector open_as_vrt(CharacterVector dsn, NumericVector extent, Character
   auto poDS = cpl::down_cast<VRTDataset*>(GDALDataset::FromHandle(poDATASET));
   if( poDS )
   {
-    poDS->SetDescription(CPLSPrintf("%s", dsn[0]));
+    poDS->SetDescription(CPLSPrintf("%s", (char *) dsn[0]));
     poDS->SetWritable(false);
   }
   if (poDS) {
