@@ -5,5 +5,8 @@ config.*
 proj_conf*
 inst/cli/warp
 inst/cli/*.tif
+inst/cli/*.xml
+inst/cli/gdal_warp
+inst/cli/gdal_warp0
 src/Makevars
 errors.txt
