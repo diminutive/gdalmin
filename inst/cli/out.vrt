@@ -1,0 +1,72 @@
+<VRTDataset rasterXSize="512" rasterYSize="256" subClass="VRTWarpedDataset">
+  <SRS dataAxisToSRSAxisMapping="1,2">PROJCS["unknown",GEOGCS["unknown",DATUM["WGS_1984",SPHEROID["WGS 84",6378137,298.257223563,AUTHORITY["EPSG","7030"]],AUTHORITY["EPSG","6326"]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9122"]]],PROJECTION["Lambert_Azimuthal_Equal_Area"],PARAMETER["latitude_of_center",0],PARAMETER["longitude_of_center",0],PARAMETER["false_easting",0],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]</SRS>
+  <GeoTransform> -3.0000000000000000e+06,  1.1718750000000000e+04,  0.0000000000000000e+00,  3.0000000000000000e+06,  0.0000000000000000e+00, -2.3437500000000000e+04</GeoTransform>
+  <Metadata>
+    <MDI key="AREA_OR_POINT">Area</MDI>
+    <MDI key="NC_GLOBAL#Conventions">COARDS</MDI>
+    <MDI key="NC_GLOBAL#node_offset">1</MDI>
+    <MDI key="NC_GLOBAL#source">-Rd -I2m -ZTLf                          </MDI>
+    <MDI key="x#actual_range">{-180,180}</MDI>
+    <MDI key="x#long_name">x</MDI>
+    <MDI key="y#actual_range">{-90,90}</MDI>
+    <MDI key="y#long_name">y</MDI>
+    <MDI key="z#actual_range">{-10791,8440}</MDI>
+    <MDI key="z#add_offset">0</MDI>
+    <MDI key="z#long_name">z</MDI>
+    <MDI key="z#scale_factor">1</MDI>
+    <MDI key="z#_FillValue">nan</MDI>
+  </Metadata>
+  <VRTRasterBand dataType="Float32" band="1" subClass="VRTWarpedRasterBand">
+    <Metadata>
+      <MDI key="actual_range">{-10791,8440}</MDI>
+      <MDI key="add_offset">0</MDI>
+      <MDI key="long_name">z</MDI>
+      <MDI key="NETCDF_VARNAME">z</MDI>
+      <MDI key="scale_factor">1</MDI>
+      <MDI key="_FillValue">nan</MDI>
+    </Metadata>
+    <NoDataValue>nan</NoDataValue>
+    <ColorInterp>Gray</ColorInterp>
+  </VRTRasterBand>
+  <BlockXSize>512</BlockXSize>
+  <BlockYSize>128</BlockYSize>
+  <GDALWarpOptions>
+    <WarpMemoryLimit>6.71089e+07</WarpMemoryLimit>
+    <ResampleAlg>NearestNeighbour</ResampleAlg>
+    <WorkingDataType>Float64</WorkingDataType>
+    <Option name="INIT_DEST">NO_DATA</Option>
+    <Option name="ERROR_OUT_IF_EMPTY_SOURCE_WINDOW">FALSE</Option>
+    <SourceDataset relativeToVRT="1">in.tif</SourceDataset>
+    <Transformer>
+      <ApproxTransformer>
+        <MaxError>0.125</MaxError>
+        <BaseTransformer>
+          <GenImgProjTransformer>
+            <SrcGeoTransform>-180,1,0,90,0,-1</SrcGeoTransform>
+            <SrcInvGeoTransform>180,1,0,90,0,-1</SrcInvGeoTransform>
+            <DstGeoTransform>-3000000,11718.75,0,3000000,0,-23437.5</DstGeoTransform>
+            <DstInvGeoTransform>256,8.53333333333333385e-05,0,128,0,-4.26666666666666693e-05</DstInvGeoTransform>
+            <ReprojectTransformer>
+              <ReprojectionTransformer>
+                <SourceSRS>GEOGCS["WGS 84",DATUM["WGS_1984",SPHEROID["WGS 84",6378137,298.257223563,AUTHORITY["EPSG","7030"]],AUTHORITY["EPSG","6326"]],PRIMEM["Greenwich",0],UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9122"]],AXIS["Latitude",NORTH],AXIS["Longitude",EAST],AUTHORITY["EPSG","4326"]]</SourceSRS>
+                <TargetSRS>PROJCS["unknown",GEOGCS["unknown",DATUM["WGS_1984",SPHEROID["WGS 84",6378137,298.257223563,AUTHORITY["EPSG","7030"]],AUTHORITY["EPSG","6326"]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9122"]]],PROJECTION["Lambert_Azimuthal_Equal_Area"],PARAMETER["latitude_of_center",0],PARAMETER["longitude_of_center",0],PARAMETER["false_easting",0],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]</TargetSRS>
+                <Options>
+                  <Option key="CENTER_LONG">0</Option>
+                  <Option key="AREA_OF_INTEREST">-180,-90,180,90</Option>
+                </Options>
+              </ReprojectionTransformer>
+            </ReprojectTransformer>
+          </GenImgProjTransformer>
+        </BaseTransformer>
+      </ApproxTransformer>
+    </Transformer>
+    <BandList>
+      <BandMapping src="1" dst="1">
+        <SrcNoDataReal>nan</SrcNoDataReal>
+        <SrcNoDataImag>0</SrcNoDataImag>
+        <DstNoDataReal>nan</DstNoDataReal>
+        <DstNoDataImag>0</DstNoDataImag>
+      </BandMapping>
+    </BandList>
+  </GDALWarpOptions>
+</VRTDataset>

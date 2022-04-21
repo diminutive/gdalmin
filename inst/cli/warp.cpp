@@ -6,7 +6,7 @@
 #include "gdalwarper.h"
 #include "gdal_utils.h"  // for GDALWarpAppOptions
 
-// g++  -I/usr/include/gdal -L/usr/lib -lgdal -lproj -o warp warp.cpp
+// g++  -I/usr/include/gdal -o warp warp.cpp -L/usr/lib -lgdal -lproj
 int warp() {
   GDALAllRegister();
 
