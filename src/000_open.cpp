@@ -17,6 +17,28 @@ using namespace Rcpp;
 //   gdalmin:::open_gdal(c(file, topos))
 //
 
+
+// [[Rcpp::export]]
+CharacterVector open_xml(CharacterVector dsn) {
+  GDALAllRegister();
+ CharacterVector out(1);
+
+  GDALDataset *poSrcDS = (GDALDataset *)GDALOpenShared(dsn[0], GA_ReadOnly);
+  // can't do this unless poSrcDS really is VRT
+   if (EQUAL(poSrcDS->GetDriverName(),  "VRT")) {
+     VRTDataset * VRTdcDS = cpl::down_cast<VRTDataset *>(poSrcDS );
+     if (!(VRTdcDS == nullptr)) out[0] = VRTdcDS->GetMetadata("xml:VRT")[0];
+   } else {
+     GDALDriver *poDriver = (GDALDriver *)GDALGetDriverByName("VRT");
+     GDALDataset *VRTDS = poDriver->CreateCopy("", poSrcDS, false, NULL, NULL, NULL);
+     if (!(VRTDS == nullptr)) out[0] = VRTDS->GetMetadata("xml:VRT")[0];
+     GDALClose((GDALDatasetH) VRTDS);
+
+   }
+  GDALClose((GDALDatasetH) poSrcDS);
+  return out;
+}
+
 // [[Rcpp::export]]
 IntegerVector open_gdal(CharacterVector source_filename) {
 
