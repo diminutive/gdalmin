@@ -18,21 +18,78 @@ using namespace Rcpp;
 //
 
 
+bool has_subdataset0(GDALDataset *poDataset) {
+  // not faster, we good
+  //if (poDataset->GetRasterCount() > 0) return false;
+  char **MDdomain = GDALGetMetadataDomainList(poDataset);
+  int mdi = 0; // iterate though MetadataDomainList
+  bool has_sds = false;
+  while (MDdomain && MDdomain[mdi] != NULL) {
+    if (strcmp(MDdomain[mdi], "SUBDATASETS") == 0) {
+      has_sds = true;
+    }
+    mdi++;
+  }
+  //cleanup
+  CSLDestroy(MDdomain);
+  return has_sds;
+}
 
-GDALDatasetH open_gdalH(const char * dsn) {
+CharacterVector list_subdataset_i(GDALDataset *poDataset, int i_sds) {
+  // need error handling on this is so janky
+  int sdi = 0;
+  // don't call this function without calling has_subdatasets() first
+  // owned by the object
+  char **SDS2 = poDataset->GetMetadata("SUBDATASETS");
+  while (SDS2 && SDS2[sdi] != NULL) {
+    sdi++; // count
+  }
+  // FIXME
+  if (sdi < 1) return "";
+  if (!(sdi % 2 == 0)) return "";
+  // we only want the first of each pair
+  int dscount = sdi / 2;
+  CharacterVector ret(1);
+  if (dscount > 0) {
+    // we have subdatasets, so loop but just grab i-th
+    for (int ii = 0; ii < dscount; ii++) {
+      if (ii == (i_sds - 1)) {
+        // ii*2 because SDS tokens come in pairs
+        char  **papszTokens = CSLTokenizeString2(SDS2[ii * 2], "=", 0);
+        ret[0] = papszTokens[1];
+        CSLDestroy( papszTokens );
+      }
+    }
+  }
+  return ret;
+}
+GDALDatasetH open_gdalH(const char * dsn, IntegerVector sds) {
   GDALAllRegister();
   GDALDatasetH DS = GDALOpenShared(dsn, GA_ReadOnly);
+  if (sds[0] > 0 && has_subdataset0((GDALDataset*) DS)) {
+    CharacterVector sdsnames = list_subdataset_i((GDALDataset*)DS, sds[0]);
+    if (sdsnames.length() > 0 && !sdsnames[0].empty()) {
+      // user asked for specific 1-based SDS, which we obtained
+      // ///user asked for 1-based SDS, or zero was default (we don't open SDS)
+      // if (sds[0] > (sdsnames.length())) {
+      //   return nullptr;
+      // }
+      GDALClose((GDALDataset*) DS);
+      DS = GDALOpenShared(sdsnames[0], GA_ReadOnly);
+   }
   //if (DS == nullptr) stop("cannot open %s\n", dsn[0]);
+
+  }
   return DS;
 }
-GDALDatasetH* open_gdalH_multiple(CharacterVector dsn) {
+GDALDatasetH* open_gdalH_multiple(CharacterVector dsn, IntegerVector sds) {
   GDALAllRegister();
   GDALDatasetH* poHDS;
   poHDS = static_cast<GDALDatasetH *>(CPLMalloc(sizeof(GDALDatasetH) * dsn.size()));
-  for (int i = 0; i < dsn.size(); i++) poHDS[i] = open_gdalH(dsn[i]);
+  for (int i = 0; i < dsn.size(); i++) poHDS[i] = open_gdalH(dsn[i], sds);
   return poHDS;
 }
-GDALDatasetH open_gdalH_atranslate(const char* dsn, NumericVector extent, CharacterVector projection) {
+GDALDatasetH open_gdalH_atranslate(const char* dsn, NumericVector extent, CharacterVector projection, IntegerVector sds) {
   GDALAllRegister();
   CPLStringList translate_argv;
   translate_argv.AddString("-of");
@@ -52,7 +109,7 @@ GDALDatasetH open_gdalH_atranslate(const char* dsn, NumericVector extent, Charac
 
   GDALTranslateOptions* psTransOptions = GDALTranslateOptionsNew(translate_argv.List(), nullptr);
 
-  GDALDatasetH a_DS = GDALTranslate("", (GDALDataset*)open_gdalH(dsn), psTransOptions, nullptr);
+  GDALDatasetH a_DS = GDALTranslate("", (GDALDataset*)open_gdalH(dsn, sds), psTransOptions, nullptr);
   GDALTranslateOptionsFree( psTransOptions );
 
   return a_DS;
@@ -73,19 +130,18 @@ const char* gdal_vrt_text(GDALDataset* poSrcDS) {
   return out[0];
 }
 // [[Rcpp::export]]
-CharacterVector open_to_vrt(CharacterVector dsn, NumericVector extent, CharacterVector projection) {
-  CharacterVector out(1);
+CharacterVector open_to_vrt(CharacterVector dsn, NumericVector extent, CharacterVector projection, IntegerVector sds) {
+  CharacterVector out(dsn.size());
   GDALDatasetH DS;
-
-  if (extent.size() == 4 || (!projection[0].empty())) {
-    Rprintf("here we go!\n");
-    DS = open_gdalH_atranslate(dsn[0], extent, projection);
-  } else {
-    DS = open_gdalH(dsn[0]);
+  for (int i = 0; i < out.size(); i++) {
+    if (extent.size() == 4 || (!projection[0].empty())) {
+      DS = open_gdalH_atranslate(dsn[0], extent, projection, sds);
+    } else {
+      DS = open_gdalH(dsn[0], sds);
+    }
+    out[i] = gdal_vrt_text((GDALDataset*) DS);
+    GDALClose(DS);
   }
-  out[0] = gdal_vrt_text((GDALDataset*) DS);
-  GDALClose(DS);
-
   return out;
 }
 
@@ -93,22 +149,23 @@ CharacterVector open_to_vrt(CharacterVector dsn, NumericVector extent, Character
 // [[Rcpp::export]]
 CharacterVector open_xml(CharacterVector dsn) {
   GDALAllRegister();
- CharacterVector out(1);
+  CharacterVector out(1);
 
   GDALDataset *poSrcDS = (GDALDataset *)GDALOpenShared(dsn[0], GA_ReadOnly);
   // can't do this unless poSrcDS really is VRT
-   if (EQUAL(poSrcDS->GetDriverName(),  "VRT")) {
-     VRTDataset * VRTdcDS = cpl::down_cast<VRTDataset *>(poSrcDS );
-     if (!(VRTdcDS == nullptr)) out[0] = VRTdcDS->GetMetadata("xml:VRT")[0];
-   } else {
-     GDALDriver *poDriver = (GDALDriver *)GDALGetDriverByName("VRT");
-     GDALDataset *VRTDS = poDriver->CreateCopy("", poSrcDS, false, NULL, NULL, NULL);
-     if (!(VRTDS == nullptr)) out[0] = VRTDS->GetMetadata("xml:VRT")[0];
-     GDALClose((GDALDatasetH) VRTDS);
-   }
+  if (EQUAL(poSrcDS->GetDriverName(),  "VRT")) {
+    VRTDataset * VRTdcDS = cpl::down_cast<VRTDataset *>(poSrcDS );
+    if (!(VRTdcDS == nullptr)) out[0] = VRTdcDS->GetMetadata("xml:VRT")[0];
+  } else {
+    GDALDriver *poDriver = (GDALDriver *)GDALGetDriverByName("VRT");
+    GDALDataset *VRTDS = poDriver->CreateCopy("", poSrcDS, false, NULL, NULL, NULL);
+    if (!(VRTDS == nullptr)) out[0] = VRTDS->GetMetadata("xml:VRT")[0];
+    GDALClose((GDALDatasetH) VRTDS);
+  }
   GDALClose((GDALDatasetH) poSrcDS);
   return out;
 }
+
 
 // [[Rcpp::export]]
 IntegerVector open_gdal(CharacterVector source_filename) {
