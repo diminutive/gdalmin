@@ -10,6 +10,175 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
+// open_to_vrt
+CharacterVector open_to_vrt(CharacterVector dsn, NumericVector extent, CharacterVector projection, IntegerVector sds);
+RcppExport SEXP _gdalmin_open_to_vrt(SEXP dsnSEXP, SEXP extentSEXP, SEXP projectionSEXP, SEXP sdsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< CharacterVector >::type dsn(dsnSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type extent(extentSEXP);
+    Rcpp::traits::input_parameter< CharacterVector >::type projection(projectionSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type sds(sdsSEXP);
+    rcpp_result_gen = Rcpp::wrap(open_to_vrt(dsn, extent, projection, sds));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gm_GDALOpenShared
+SEXP gm_GDALOpenShared(CharacterVector dsn);
+RcppExport SEXP _gdalmin_gm_GDALOpenShared(SEXP dsnSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< CharacterVector >::type dsn(dsnSEXP);
+    rcpp_result_gen = Rcpp::wrap(gm_GDALOpenShared(dsn));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gm_GetDescription
+CharacterVector gm_GetDescription(SEXP xp);
+RcppExport SEXP _gdalmin_gm_GetDescription(SEXP xpSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type xp(xpSEXP);
+    rcpp_result_gen = Rcpp::wrap(gm_GetDescription(xp));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gm_chr
+CharacterVector gm_chr(SEXP xp);
+RcppExport SEXP _gdalmin_gm_chr(SEXP xpSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type xp(xpSEXP);
+    rcpp_result_gen = Rcpp::wrap(gm_chr(xp));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gm_GetRasterXSize
+IntegerVector gm_GetRasterXSize(SEXP xp);
+RcppExport SEXP _gdalmin_gm_GetRasterXSize(SEXP xpSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type xp(xpSEXP);
+    rcpp_result_gen = Rcpp::wrap(gm_GetRasterXSize(xp));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gm_GetRasterYSize
+IntegerVector gm_GetRasterYSize(SEXP xp);
+RcppExport SEXP _gdalmin_gm_GetRasterYSize(SEXP xpSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type xp(xpSEXP);
+    rcpp_result_gen = Rcpp::wrap(gm_GetRasterYSize(xp));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gm_GetRasterCount
+IntegerVector gm_GetRasterCount(SEXP xp);
+RcppExport SEXP _gdalmin_gm_GetRasterCount(SEXP xpSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type xp(xpSEXP);
+    rcpp_result_gen = Rcpp::wrap(gm_GetRasterCount(xp));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gm_GetGCPCount
+IntegerVector gm_GetGCPCount(SEXP xp);
+RcppExport SEXP _gdalmin_gm_GetGCPCount(SEXP xpSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type xp(xpSEXP);
+    rcpp_result_gen = Rcpp::wrap(gm_GetGCPCount(xp));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gm_Reference
+IntegerVector gm_Reference(SEXP xp);
+RcppExport SEXP _gdalmin_gm_Reference(SEXP xpSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type xp(xpSEXP);
+    rcpp_result_gen = Rcpp::wrap(gm_Reference(xp));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gm_Dereference
+IntegerVector gm_Dereference(SEXP xp);
+RcppExport SEXP _gdalmin_gm_Dereference(SEXP xpSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type xp(xpSEXP);
+    rcpp_result_gen = Rcpp::wrap(gm_Dereference(xp));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gm_ReleaseRef
+IntegerVector gm_ReleaseRef(SEXP xp);
+RcppExport SEXP _gdalmin_gm_ReleaseRef(SEXP xpSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type xp(xpSEXP);
+    rcpp_result_gen = Rcpp::wrap(gm_ReleaseRef(xp));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gm_GetRefCount
+IntegerVector gm_GetRefCount(SEXP xp);
+RcppExport SEXP _gdalmin_gm_GetRefCount(SEXP xpSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type xp(xpSEXP);
+    rcpp_result_gen = Rcpp::wrap(gm_GetRefCount(xp));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gm_GetSummaryRefCount
+IntegerVector gm_GetSummaryRefCount(SEXP xp);
+RcppExport SEXP _gdalmin_gm_GetSummaryRefCount(SEXP xpSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type xp(xpSEXP);
+    rcpp_result_gen = Rcpp::wrap(gm_GetSummaryRefCount(xp));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gm_GetShared
+IntegerVector gm_GetShared(SEXP xp);
+RcppExport SEXP _gdalmin_gm_GetShared(SEXP xpSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type xp(xpSEXP);
+    rcpp_result_gen = Rcpp::wrap(gm_GetShared(xp));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gm_TestCapability
+IntegerVector gm_TestCapability(SEXP xp, CharacterVector capability);
+RcppExport SEXP _gdalmin_gm_TestCapability(SEXP xpSEXP, SEXP capabilitySEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type xp(xpSEXP);
+    Rcpp::traits::input_parameter< CharacterVector >::type capability(capabilitySEXP);
+    rcpp_result_gen = Rcpp::wrap(gm_TestCapability(xp, capability));
+    return rcpp_result_gen;
+END_RCPP
+}
 // ogr_api
 int ogr_api();
 RcppExport SEXP _gdalmin_ogr_api() {
@@ -58,6 +227,21 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_gdalmin_open_to_vrt", (DL_FUNC) &_gdalmin_open_to_vrt, 4},
+    {"_gdalmin_gm_GDALOpenShared", (DL_FUNC) &_gdalmin_gm_GDALOpenShared, 1},
+    {"_gdalmin_gm_GetDescription", (DL_FUNC) &_gdalmin_gm_GetDescription, 1},
+    {"_gdalmin_gm_chr", (DL_FUNC) &_gdalmin_gm_chr, 1},
+    {"_gdalmin_gm_GetRasterXSize", (DL_FUNC) &_gdalmin_gm_GetRasterXSize, 1},
+    {"_gdalmin_gm_GetRasterYSize", (DL_FUNC) &_gdalmin_gm_GetRasterYSize, 1},
+    {"_gdalmin_gm_GetRasterCount", (DL_FUNC) &_gdalmin_gm_GetRasterCount, 1},
+    {"_gdalmin_gm_GetGCPCount", (DL_FUNC) &_gdalmin_gm_GetGCPCount, 1},
+    {"_gdalmin_gm_Reference", (DL_FUNC) &_gdalmin_gm_Reference, 1},
+    {"_gdalmin_gm_Dereference", (DL_FUNC) &_gdalmin_gm_Dereference, 1},
+    {"_gdalmin_gm_ReleaseRef", (DL_FUNC) &_gdalmin_gm_ReleaseRef, 1},
+    {"_gdalmin_gm_GetRefCount", (DL_FUNC) &_gdalmin_gm_GetRefCount, 1},
+    {"_gdalmin_gm_GetSummaryRefCount", (DL_FUNC) &_gdalmin_gm_GetSummaryRefCount, 1},
+    {"_gdalmin_gm_GetShared", (DL_FUNC) &_gdalmin_gm_GetShared, 1},
+    {"_gdalmin_gm_TestCapability", (DL_FUNC) &_gdalmin_gm_TestCapability, 2},
     {"_gdalmin_ogr_api", (DL_FUNC) &_gdalmin_ogr_api, 0},
     {"_gdalmin_open_as_vrt", (DL_FUNC) &_gdalmin_open_as_vrt, 4},
     {"_gdalmin_not_die1", (DL_FUNC) &_gdalmin_not_die1, 1},
