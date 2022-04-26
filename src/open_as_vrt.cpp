@@ -1,5 +1,8 @@
+//  There's a better version of this in 000_open.cpp MDSumner 2022-04-26
+
 #include <Rcpp.h>
 using namespace Rcpp;
+
 
 #include "gdal_priv.h"
 //#include "gdalwarper.h"
