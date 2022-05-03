@@ -109,6 +109,8 @@ GDALDatasetH open_gdalH_atranslate(const char* dsn, NumericVector extent, Charac
     translate_argv.AddString(projection[0]);
   }
 
+  //translate_argv.AddString("-b");
+  //translate_argv.AddString("1");
   GDALTranslateOptions* psTransOptions = GDALTranslateOptionsNew(translate_argv.List(), nullptr);
   GDALDatasetH a_DS = GDALTranslate("", (GDALDataset*)open_gdalH(dsn, sds), psTransOptions, nullptr);
   GDALTranslateOptionsFree( psTransOptions );

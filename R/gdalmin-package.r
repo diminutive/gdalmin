@@ -1,3 +1,8 @@
+.onLoad <- function(libname, pkgname) {
+  gdal_register()
+}
+
+
 #' gdalmin.
 #'
 #' @name gdalmin

@@ -10,6 +10,50 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
+// handle
+IntegerVector handle(const char * dsn);
+RcppExport SEXP _gdalmin_handle(SEXP dsnSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const char * >::type dsn(dsnSEXP);
+    rcpp_result_gen = Rcpp::wrap(handle(dsn));
+    return rcpp_result_gen;
+END_RCPP
+}
+// pointer
+IntegerVector pointer(const char * dsn);
+RcppExport SEXP _gdalmin_pointer(SEXP dsnSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const char * >::type dsn(dsnSEXP);
+    rcpp_result_gen = Rcpp::wrap(pointer(dsn));
+    return rcpp_result_gen;
+END_RCPP
+}
+// handles
+IntegerVector handles(CharacterVector dsn);
+RcppExport SEXP _gdalmin_handles(SEXP dsnSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< CharacterVector >::type dsn(dsnSEXP);
+    rcpp_result_gen = Rcpp::wrap(handles(dsn));
+    return rcpp_result_gen;
+END_RCPP
+}
+// pointers
+IntegerVector pointers(CharacterVector dsn);
+RcppExport SEXP _gdalmin_pointers(SEXP dsnSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< CharacterVector >::type dsn(dsnSEXP);
+    rcpp_result_gen = Rcpp::wrap(pointers(dsn));
+    return rcpp_result_gen;
+END_RCPP
+}
 // open_to_vrt
 CharacterVector open_to_vrt(CharacterVector dsn, NumericVector extent, CharacterVector projection, IntegerVector sds);
 RcppExport SEXP _gdalmin_open_to_vrt(SEXP dsnSEXP, SEXP extentSEXP, SEXP projectionSEXP, SEXP sdsSEXP) {
@@ -179,6 +223,15 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// gdal_register
+void gdal_register();
+RcppExport SEXP _gdalmin_gdal_register() {
+BEGIN_RCPP
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    gdal_register();
+    return R_NilValue;
+END_RCPP
+}
 // ogr_api
 int ogr_api();
 RcppExport SEXP _gdalmin_ogr_api() {
@@ -227,6 +280,10 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_gdalmin_handle", (DL_FUNC) &_gdalmin_handle, 1},
+    {"_gdalmin_pointer", (DL_FUNC) &_gdalmin_pointer, 1},
+    {"_gdalmin_handles", (DL_FUNC) &_gdalmin_handles, 1},
+    {"_gdalmin_pointers", (DL_FUNC) &_gdalmin_pointers, 1},
     {"_gdalmin_open_to_vrt", (DL_FUNC) &_gdalmin_open_to_vrt, 4},
     {"_gdalmin_gm_GDALOpenShared", (DL_FUNC) &_gdalmin_gm_GDALOpenShared, 1},
     {"_gdalmin_gm_GetDescription", (DL_FUNC) &_gdalmin_gm_GetDescription, 1},
@@ -242,6 +299,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_gdalmin_gm_GetSummaryRefCount", (DL_FUNC) &_gdalmin_gm_GetSummaryRefCount, 1},
     {"_gdalmin_gm_GetShared", (DL_FUNC) &_gdalmin_gm_GetShared, 1},
     {"_gdalmin_gm_TestCapability", (DL_FUNC) &_gdalmin_gm_TestCapability, 2},
+    {"_gdalmin_gdal_register", (DL_FUNC) &_gdalmin_gdal_register, 0},
     {"_gdalmin_ogr_api", (DL_FUNC) &_gdalmin_ogr_api, 0},
     {"_gdalmin_open_as_vrt", (DL_FUNC) &_gdalmin_open_as_vrt, 4},
     {"_gdalmin_not_die1", (DL_FUNC) &_gdalmin_not_die1, 1},
