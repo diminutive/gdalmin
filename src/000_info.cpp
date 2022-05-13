@@ -1,11 +1,8 @@
 #include <Rcpp.h>
 using namespace Rcpp;
 
-//#include "gdal_version.h"
-#include "gdal.h"
 #include "cpl_string.h"
 #include "gdal_utils.h"
-//#include "gdal_utils_priv.h"
 // from apps/gdal_utils_priv.h
 struct GDALInfoOptionsForBinary
 {
