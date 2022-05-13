@@ -54,6 +54,18 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// gdal_info_cpp
+CharacterVector gdal_info_cpp(CharacterVector dsn, CharacterVector options);
+RcppExport SEXP _gdalmin_gdal_info_cpp(SEXP dsnSEXP, SEXP optionsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< CharacterVector >::type dsn(dsnSEXP);
+    Rcpp::traits::input_parameter< CharacterVector >::type options(optionsSEXP);
+    rcpp_result_gen = Rcpp::wrap(gdal_info_cpp(dsn, options));
+    return rcpp_result_gen;
+END_RCPP
+}
 // open_to_vrt
 CharacterVector open_to_vrt(CharacterVector dsn, NumericVector extent, CharacterVector projection, IntegerVector sds);
 RcppExport SEXP _gdalmin_open_to_vrt(SEXP dsnSEXP, SEXP extentSEXP, SEXP projectionSEXP, SEXP sdsSEXP) {
@@ -284,6 +296,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_gdalmin_pointer", (DL_FUNC) &_gdalmin_pointer, 1},
     {"_gdalmin_handles", (DL_FUNC) &_gdalmin_handles, 1},
     {"_gdalmin_pointers", (DL_FUNC) &_gdalmin_pointers, 1},
+    {"_gdalmin_gdal_info_cpp", (DL_FUNC) &_gdalmin_gdal_info_cpp, 2},
     {"_gdalmin_open_to_vrt", (DL_FUNC) &_gdalmin_open_to_vrt, 4},
     {"_gdalmin_gm_GDALOpenShared", (DL_FUNC) &_gdalmin_gm_GDALOpenShared, 1},
     {"_gdalmin_gm_GetDescription", (DL_FUNC) &_gdalmin_gm_GetDescription, 1},

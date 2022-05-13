@@ -1,5 +1,6 @@
 gdalmin_info_internal <- function(x, json = TRUE,
                          stats = FALSE,
+                         sd = 0,
                          checksum = FALSE,
                          wkt_format = "WKT2",
                          oo = character(),
@@ -9,7 +10,10 @@ gdalmin_info_internal <- function(x, json = TRUE,
   rep_zip <- function(x, y) {
     as.vector(t(cbind(rep(x, length(y)), y)))
   }
+  if (length(sd) > 1) message("'sd' argument cannot be vectorized over 'dsn', ignoring all but first value")
+
   extra <- c(if(json) "-json",
+             if (is.numeric(sd) && sd[1L] > 0) c("-sd", sd[1L]),
              if (stats) "-stats",
              if (checksum) "-checksum",
              if (nchar(wkt_format[1]) > 0) c("-wkt_format", wkt_format[1L]),
