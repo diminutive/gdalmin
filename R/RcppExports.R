@@ -17,6 +17,10 @@ pointers <- function(dsn) {
     .Call('_gdalmin_pointers', PACKAGE = 'gdalmin', dsn)
 }
 
+gdal_info_cpp <- function(dsn, options) {
+    .Call('_gdalmin_gdal_info_cpp', PACKAGE = 'gdalmin', dsn, options)
+}
+
 open_to_vrt <- function(dsn, extent, projection, sds) {
     .Call('_gdalmin_open_to_vrt', PACKAGE = 'gdalmin', dsn, extent, projection, sds)
 }
