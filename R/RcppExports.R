@@ -15,3 +15,7 @@ open_as_vrt <- function(dsn, a_ullr) {
     .Call('_gdalmin_open_as_vrt', PACKAGE = 'gdalmin', dsn, a_ullr)
 }
 
+open_sds <- function(dsn, sds) {
+    .Call('_gdalmin_open_sds', PACKAGE = 'gdalmin', dsn, sds)
+}
+

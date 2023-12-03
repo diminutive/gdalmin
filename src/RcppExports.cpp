@@ -32,10 +32,23 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// open_sds
+NumericVector open_sds(CharacterVector dsn, CharacterVector sds);
+RcppExport SEXP _gdalmin_open_sds(SEXP dsnSEXP, SEXP sdsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< CharacterVector >::type dsn(dsnSEXP);
+    Rcpp::traits::input_parameter< CharacterVector >::type sds(sdsSEXP);
+    rcpp_result_gen = Rcpp::wrap(open_sds(dsn, sds));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_gdalmin_ogr_api", (DL_FUNC) &_gdalmin_ogr_api, 0},
     {"_gdalmin_open_as_vrt", (DL_FUNC) &_gdalmin_open_as_vrt, 2},
+    {"_gdalmin_open_sds", (DL_FUNC) &_gdalmin_open_sds, 2},
     {NULL, NULL, 0}
 };
 
